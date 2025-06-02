@@ -111,6 +111,9 @@ mkdir -p "$ROOT/logs"
 
 if [ -f "$ROOT/swarm.pem" ]; then
     echo "swarm.pem file is already exists, skipping login process"
+    CONFIG_PATH="$ROOT/hivemind_exp/configs/mac/grpo-qwen-2.5-0.5b-deepseek-r1.yaml"
+    GAME="gsm8k"
+    HUGGINGFACE_ACCESS_TOKEN="None"
 else
     if [ "$CONNECT_TO_TESTNET" = true ]; then
         # Run modal_login server.
