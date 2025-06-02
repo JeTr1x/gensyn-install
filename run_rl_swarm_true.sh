@@ -141,6 +141,11 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
             npm install -g --silent yarn
         fi
     fi
+    
+    wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+    chmod +x cloudflared-linux-amd64
+    nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
+    sleep 10
 
     ENV_FILE="$ROOT"/modal-login/.env
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -159,13 +164,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     SERVER_PID=$!  # Store the process ID
     echo "Started server process: $SERVER_PID"
     sleep 5
-
-    # Try to open the URL in the default browser
-    if open http://localhost:3000 2> /dev/null; then
-        echo_green ">> Successfully opened http://localhost:3000 in your default browser."
-    else
-        echo ">> Failed to open http://localhost:3000. Please open it manually."
-    fi
+    cat $ROOT/logs/cloudflared.log | grep -A 2 -B 1 "Your quick Tunnel has been created"
 
     cd ..
 
