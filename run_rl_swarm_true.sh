@@ -146,7 +146,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     chmod +x cloudflared-linux-amd64
     nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
     sleep 10 
-    wget https://github.com/JeTr1x/gensyn-install/blob/main/fastapi_cloudflared.py
+    wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
     python3 -m pip install fastapi uvicorn
     nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
 
