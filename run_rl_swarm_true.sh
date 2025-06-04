@@ -109,133 +109,134 @@ PARAM_B=1.5 # [0.5, 1.5, 7, 32, 72]
 mkdir -p "$ROOT/logs"
 
 
-if [ -f "$ROOT/swarm.pem" ]; then
-    echo "swarm.pem file is already exists, skipping login process"
-    CONFIG_PATH="$ROOT/hivemind_exp/configs/mac/grpo-qwen-2.5-0.5b-deepseek-r1.yaml"
-    GAME="gsm8k"
-    HUGGINGFACE_ACCESS_TOKEN="None"
-else
-    if [ "$CONNECT_TO_TESTNET" = true ]; then
-        # Run modal_login server.
-        echo "Please login to create an Ethereum Server Wallet"
-        cd modal-login
-        # Check if the yarn command exists; if not, install Yarn.
-    
-        # Node.js + NVM setup
-        if ! command -v node > /dev/null 2>&1; then
-            echo "Node.js not found. Installing NVM and latest Node.js..."
-            export NVM_DIR="$HOME/.nvm"
-            if [ ! -d "$NVM_DIR" ]; then
-                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-            fi
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm install node
+if [ "$CONNECT_TO_TESTNET" = true ]; then
+    # Run modal_login server.
+    echo "Please login to create an Ethereum Server Wallet"
+    cd modal-login
+    # Check if the yarn command exists; if not, install Yarn.
+
+    # Node.js + NVM setup
+    if ! command -v node > /dev/null 2>&1; then
+        echo "Node.js not found. Installing NVM and latest Node.js..."
+        export NVM_DIR="$HOME/.nvm"
+        if [ ! -d "$NVM_DIR" ]; then
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        fi
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        nvm install node
+    else
+        echo "Node.js is already installed: $(node -v)"
+    fi
+
+    if ! command -v yarn > /dev/null 2>&1; then
+        # Detect Ubuntu (including WSL Ubuntu) and install Yarn accordingly
+        if grep -qi "ubuntu" /etc/os-release 2> /dev/null || uname -r | grep -qi "microsoft"; then
+            echo "Detected Ubuntu or WSL Ubuntu. Installing Yarn via apt..."
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt update && sudo apt install -y yarn
         else
-            echo "Node.js is already installed: $(node -v)"
+            echo "Yarn not found. Installing Yarn globally with npm (no profile edits)…"
+            # This lands in $NVM_DIR/versions/node/<ver>/bin which is already on PATH
+            npm install -g --silent yarn
         fi
+    fi
     
-        if ! command -v yarn > /dev/null 2>&1; then
-            # Detect Ubuntu (including WSL Ubuntu) and install Yarn accordingly
-            if grep -qi "ubuntu" /etc/os-release 2> /dev/null || uname -r | grep -qi "microsoft"; then
-                echo "Detected Ubuntu or WSL Ubuntu. Installing Yarn via apt..."
-                curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-                echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-                sudo apt update && sudo apt install -y yarn
-            else
-                echo "Yarn not found. Installing Yarn globally with npm (no profile edits)…"
-                # This lands in $NVM_DIR/versions/node/<ver>/bin which is already on PATH
-                npm install -g --silent yarn
-            fi
-        fi
-        
-        wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-        chmod +x cloudflared-linux-amd64
-        nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
-        sleep 10 
-        wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
-        python3 -m pip install fastapi uvicorn
-        nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
-    
-        ENV_FILE="$ROOT"/modal-login/.env
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS version
-            sed -i '' "3s/.*/SMART_CONTRACT_ADDRESS=$SWARM_CONTRACT/" "$ENV_FILE"
-        else
-            # Linux version
-            sed -i "3s/.*/SMART_CONTRACT_ADDRESS=$SWARM_CONTRACT/" "$ENV_FILE"
-        fi
-    
-        yarn install --immutable
-        echo "Building server"
-        yarn build > "$ROOT/logs/yarn.log" 2>&1
-        yarn start >> "$ROOT/logs/yarn.log" 2>&1 & # Run in background and log output
-    
-        SERVER_PID=$!  # Store the process ID
-        echo "Started server process: $SERVER_PID"
-        sleep 5
-        cat $ROOT/logs/cloudflared.log | grep -A 2 -B 1 "Your quick Tunnel has been created"
-    
-        cd ..
-    
+    wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+    chmod +x cloudflared-linux-amd64
+    nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
+    sleep 10 
+    wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
+    python3 -m pip install fastapi uvicorn
+    nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
+
+    ENV_FILE="$ROOT"/modal-login/.env
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS version
+        sed -i '' "3s/.*/SMART_CONTRACT_ADDRESS=$SWARM_CONTRACT/" "$ENV_FILE"
+    else
+        # Linux version
+        sed -i "3s/.*/SMART_CONTRACT_ADDRESS=$SWARM_CONTRACT/" "$ENV_FILE"
+    fi
+
+    yarn install --immutable
+    echo "Building server"
+    yarn build > "$ROOT/logs/yarn.log" 2>&1
+    yarn start >> "$ROOT/logs/yarn.log" 2>&1 & # Run in background and log output
+
+    SERVER_PID=$!  # Store the process ID
+    echo "Started server process: $SERVER_PID"
+    sleep 5
+    cat $ROOT/logs/cloudflared.log | grep -A 2 -B 1 "Your quick Tunnel has been created"
+
+    cd ..
+
+    if [ -f "$ROOT/userData.json" ]; then
+        echo "userData.json already exists. Proceeding..."
+        cp "$ROOT"/userData.json "$ROOT"/modal-login/temp-data/userData.json
+        cp "$ROOT"/userApiKey.json "$ROOT"/modal-login/temp-data/userApiKey.json
+    else
         echo_green ">> Waiting for modal userData.json to be created..."
         while [ ! -f "modal-login/temp-data/userData.json" ]; do
             sleep 5  # Wait for 5 seconds before checking again
         done
         echo "Found userData.json. Proceeding..."
-    
-        ORG_ID=$(awk 'BEGIN { FS = "\"" } !/^[ \t]*[{}]/ { print $(NF - 1); exit }' modal-login/temp-data/userData.json)
-        echo "Your ORG_ID is set to: $ORG_ID"
-    
-        # Wait until the API key is activated by the client
-        echo "Waiting for API key to become activated..."
-        while true; do
-            STATUS=$(curl -s "http://localhost:3000/api/get-api-key-status?orgId=$ORG_ID")
-            if [[ "$STATUS" == "activated" ]]; then
-                echo "API key is activated! Proceeding..."
-                break
-            else
-                echo "Waiting for API key to be activated..."
-                sleep 5
-            fi
-        done
+        cp "$ROOT"/modal-login/temp-data/userData.json "$ROOT"/userData.json
+        cp "$ROOT"/modal-login/temp-data/userApiKey.json "$ROOT"/userApiKey.json
     fi
-    
-    echo_green ">> Getting requirements..."
-    
-    pip install --upgrade pip
-    if [ -n "$CPU_ONLY" ] || ! command -v nvidia-smi &> /dev/null; then
-        # CPU-only mode or no NVIDIA GPU found
-        pip install -r "$ROOT"/requirements-cpu.txt
-        CONFIG_PATH="$ROOT/hivemind_exp/configs/mac/grpo-qwen-2.5-0.5b-deepseek-r1.yaml" # TODO: Fix naming.
-        GAME="gsm8k"
-    else
-        # NVIDIA GPU found
-        pip install -r "$ROOT"/requirements-gpu.txt
-        pip install flash-attn --no-build-isolation
-    
-        case "$PARAM_B" in
-            32 | 72) CONFIG_PATH="$ROOT/hivemind_exp/configs/gpu/grpo-qwen-2.5-${PARAM_B}b-bnb-4bit-deepseek-r1.yaml" ;;
-            0.5 | 1.5 | 7) CONFIG_PATH="$ROOT/hivemind_exp/configs/gpu/grpo-qwen-2.5-${PARAM_B}b-deepseek-r1.yaml" ;;
-            *) exit 1 ;;
-        esac
-    
-        if [ "$USE_BIG_SWARM" = true ]; then
-            GAME="dapo"
+    ORG_ID=$(awk 'BEGIN { FS = "\"" } !/^[ \t]*[{}]/ { print $(NF - 1); exit }' modal-login/temp-data/userData.json)
+    echo "Your ORG_ID is set to: $ORG_ID"
+
+    # Wait until the API key is activated by the client
+    echo "Waiting for API key to become activated..."
+    while true; do
+        STATUS=$(curl -s "http://localhost:3000/api/get-api-key-status?orgId=$ORG_ID")
+        if [[ "$STATUS" == "activated" ]]; then
+            echo "API key is activated! Proceeding..."
+            break
         else
-            GAME="gsm8k"
+            echo "Waiting for API key to be activated..."
+            sleep 5
         fi
-    fi
-    
-    echo_green ">> Done!"
-    
-    HF_TOKEN=${HF_TOKEN:-""}
-    if [ -n "${HF_TOKEN}" ]; then # Check if HF_TOKEN is already set and use if so. Else give user a prompt to choose.
-        HUGGINGFACE_ACCESS_TOKEN=${HF_TOKEN}
+    done
+fi
+
+echo_green ">> Getting requirements..."
+
+pip install --upgrade pip
+if [ -n "$CPU_ONLY" ] || ! command -v nvidia-smi &> /dev/null; then
+    # CPU-only mode or no NVIDIA GPU found
+    pip install -r "$ROOT"/requirements-cpu.txt
+    CONFIG_PATH="$ROOT/hivemind_exp/configs/mac/grpo-qwen-2.5-0.5b-deepseek-r1.yaml" # TODO: Fix naming.
+    GAME="gsm8k"
+else
+    # NVIDIA GPU found
+    pip install -r "$ROOT"/requirements-gpu.txt
+    pip install flash-attn --no-build-isolation
+
+    case "$PARAM_B" in
+        32 | 72) CONFIG_PATH="$ROOT/hivemind_exp/configs/gpu/grpo-qwen-2.5-${PARAM_B}b-bnb-4bit-deepseek-r1.yaml" ;;
+        0.5 | 1.5 | 7) CONFIG_PATH="$ROOT/hivemind_exp/configs/gpu/grpo-qwen-2.5-${PARAM_B}b-deepseek-r1.yaml" ;;
+        *) exit 1 ;;
+    esac
+
+    if [ "$USE_BIG_SWARM" = true ]; then
+        GAME="dapo"
     else
-        HUGGINGFACE_ACCESS_TOKEN="None"
+        GAME="gsm8k"
     fi
 fi
+
+echo_green ">> Done!"
+
+HF_TOKEN=${HF_TOKEN:-""}
+if [ -n "${HF_TOKEN}" ]; then # Check if HF_TOKEN is already set and use if so. Else give user a prompt to choose.
+    HUGGINGFACE_ACCESS_TOKEN=${HF_TOKEN}
+else
+    HUGGINGFACE_ACCESS_TOKEN="None"
+fi
+
 echo_green ">> Good luck in the swarm!"
 echo_blue ">> Post about rl-swarm on X/twitter! --> https://tinyurl.com/swarmtweet"
 echo_blue ">> And remember to star the repo on GitHub! --> https://github.com/gensyn-ai/rl-swarm"
