@@ -1,0 +1,15 @@
+[Unit]
+Description=RL Swarm Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/rl-swarm
+ExecStart=/bin/bash -c 'source /root/rl-swarm/.venv/bin/activate && bash run_rl_swarm_true.sh'
+Restart=always
+User=root
+Environment=PATH=/root/rl-swarm/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target
