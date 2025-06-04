@@ -19,7 +19,7 @@ curl -o /root/rl-swarm/run_rl_swarm_true.sh https://raw.githubusercontent.com/Je
 curl -o /root/rl-swarm/hivemind_exp/configs/mac/grpo-qwen-2.5-0.5b-deepseek-r1.yaml https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/cpu_config_${CONFIG_NUM}.yaml
 
 # Скачивание сервисника
-curl -o /etc/systemd/system/rl-swarm.service https://example.com/rl-swarm.service
+curl -o /etc/systemd/system/rl-swarm.service https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/rl-swarm.service
 
 # Запуск  сервисника и вывод логов
 systemctl daemon-reload && \
