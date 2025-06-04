@@ -147,9 +147,11 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     chmod +x cloudflared-linux-amd64
     nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
     sleep 10 
+    wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/wait_for_hello.py
     wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
-    python3 -m pip install fastapi uvicorn
+    python3 -m pip install fastapi uvicorn subprocess
     nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
+    nohup python3 wait_for_hello.py  > "$ROOT/logs/wait_for_hello.log" 2>&1 &
 
     ENV_FILE="$ROOT"/modal-login/.env
     if [[ "$OSTYPE" == "darwin"* ]]; then
