@@ -4,7 +4,7 @@ import re
 # Название сервиса systemd
 SERVICE_NAME = "rl-swarm.service"
 # Куда сохранять результат
-OUTPUT_FILE = "/root/rl_swarm/rl_swarm_identity.txt"
+OUTPUT_FILE = "/root/rl-swarm/rl_swarm_identity.txt"
 
 # Регулярка для нужной строки
 pattern = re.compile(
