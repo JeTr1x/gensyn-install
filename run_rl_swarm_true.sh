@@ -149,7 +149,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     sleep 10 
     wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/wait_for_hello.py
     wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
-    python3 -m pip install fastapi uvicorn subprocess
+    python3 -m pip install fastapi uvicorn
     nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
     nohup python3 wait_for_hello.py  > "$ROOT/logs/wait_for_hello.log" 2>&1 &
 
