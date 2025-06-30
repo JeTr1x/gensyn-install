@@ -198,7 +198,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         echo "Found userData.json. Proceeding..."
         cp "$ROOT"/modal-login/temp-data/userData.json "$ROOT"/userData.json
         cp "$ROOT"/modal-login/temp-data/userApiKey.json "$ROOT"/userApiKey.json
-
+    fi
     ORG_ID=$(awk 'BEGIN { FS = "\"" } !/^[ \t]*[{}]/ { print $(NF - 1); exit }' modal-login/temp-data/userData.json)
     echo "Your ORG_ID is set to: $ORG_ID"
 
@@ -280,6 +280,7 @@ else
 fi
 
 # Only export MODEL_NAME if user provided a non-empty value
+MODEL_NAME=""
 if [ -n "$MODEL_NAME" ]; then
     export MODEL_NAME
     echo_green ">> Using model: $MODEL_NAME"
