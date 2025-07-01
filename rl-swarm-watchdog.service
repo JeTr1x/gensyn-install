@@ -1,0 +1,11 @@
+[Unit]
+Description=Watchdog for rl-swarm service
+After=network.target
+
+[Service]
+ExecStart=$HOME/rl-swarm/rl-swarm-watchdog.sh
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
