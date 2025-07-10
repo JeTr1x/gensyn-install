@@ -38,7 +38,7 @@ while true; do
 
     # Проверка на отсутствие логов за 5 минут
     if journalctl -u "$SERVICE" --since "30 minutes ago" --no-pager | grep -q -- "-- No entries --"; then
-        echo "[$(date)] Нет новых логов за последние 5 минут."
+        echo "[$(date)] Нет новых логов за последние 30 минут."
         NO_NEW_LOGS=true
     else
         echo "[$(date)] Логи за последние 30 минут присутствуют."
