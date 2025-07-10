@@ -37,11 +37,11 @@ while true; do
     fi
 
     # Проверка на отсутствие логов за 5 минут
-    if journalctl -u "$SERVICE" --since "5 minutes ago" --no-pager | grep -q -- "-- No entries --"; then
+    if journalctl -u "$SERVICE" --since "30 minutes ago" --no-pager | grep -q -- "-- No entries --"; then
         echo "[$(date)] Нет новых логов за последние 5 минут."
         NO_NEW_LOGS=true
     else
-        echo "[$(date)] Логи за последние 5 минут присутствуют."
+        echo "[$(date)] Логи за последние 30 минут присутствуют."
     fi
 
     # Проверка на API Key
@@ -61,6 +61,6 @@ while true; do
         echo "[$(date)] Всё в порядке. Перезапуск не требуется."
     fi
 
-    echo "[$(date)] Жду 5 минут перед следующей проверкой."
-    sleep 300
+    echo "[$(date)] Жду 30 минут перед следующей проверкой."
+    sleep 1800
 done
