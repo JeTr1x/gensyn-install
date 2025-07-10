@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT=$PWD
 
 # GenRL Swarm version to use
-GENRL_SWARM_TAG="v0.1.1"
+GENRL_SWARM_TAG="v0.1.4"
 
 export IDENTITY_PATH
 export GENSYN_RESET_CONFIG
@@ -222,7 +222,7 @@ pip install --upgrade pip
 # Clone GenRL repository to user's working directory
 echo_green ">> Initializing and updating GenRL..."
 if [ ! -d "$ROOT/genrl-swarm" ]; then
-    git clone --depth=1 --branch "$GENRL_SWARM_TAG" https://github.com/gensyn-ai/genrl-swarm.git "$ROOT/genrl-swarm"
+    git clone --depth=1 --branch "$GENRL_SWARM_TAG" https://github.com/gensyn-ai/genrl.git "$ROOT/genrl-swarm"
 else
     # Check if we are on the correct tag
     cd "$ROOT/genrl-swarm"
