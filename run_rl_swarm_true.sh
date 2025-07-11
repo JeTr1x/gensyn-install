@@ -162,6 +162,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
             wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
             python3 -m pip install fastapi uvicorn
             nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
+        fi
     else
         echo_green "userData.json does not exist - starting tunnel and server"
         wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
