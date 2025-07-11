@@ -151,7 +151,17 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
 
     
     if [ -f "$ROOT/userData.json" ]; then
-        echo "userData.json already exists. Skipping tunnel and server..."
+        if [ -f "$ROOT/modal-login/cloudflared-linux-amd64" ]; then
+            echo "userData.json and cloudflared-linux-amd64 already exists. Skipping tunnel and server..."
+        else
+            echo_green "cloudflared-linux-amd64 does not exist - starting tunnel and server"
+            wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+            chmod +x cloudflared-linux-amd64
+            nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:3000 > "$ROOT/logs/cloudflared.log" 2>&1 &
+            sleep 10 
+            wget https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/fastapi_cloudflared.py
+            python3 -m pip install fastapi uvicorn
+            nohup python3 fastapi_cloudflared.py  > "$ROOT/logs/fastapi_cloudflared.log" 2>&1 &
     else
         echo_green "userData.json does not exist - starting tunnel and server"
         wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
