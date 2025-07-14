@@ -11,6 +11,7 @@ echo "Клонирование репы gensyn rl-swarm и подготовка 
 wget 162.55.91.239:4435/rl-swarmbak.tar.gz && \
 tar xvzf rl-swarmbak.tar.gz && \
 mv rl-swarmbak rl-swarm
+rm rl-swarmbak.tar.gz
 
 # Скачивание кастомного скрипта на запуск ноды
 echo " Скачивание кастомного скрипта на запуск ноды"
