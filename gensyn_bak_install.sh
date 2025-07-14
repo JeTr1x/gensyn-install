@@ -11,7 +11,7 @@ echo "Клонирование репы gensyn rl-swarm и подготовка 
 wget 162.55.91.239:4435/rl-swarmbak.tar.gz && \
 tar xvzf rl-swarmbak.tar.gz && \
 mv rl-swarmbak rl-swarm
-rm rl-swarm/swarm.pem rl-swarm/userApiKey.json rl-swarm/userData.json
+
 # Скачивание кастомного скрипта на запуск ноды
 echo " Скачивание кастомного скрипта на запуск ноды"
 curl -o /root/rl-swarm/run_rl_swarm_true.sh https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/run_rl_swarm_true.sh
