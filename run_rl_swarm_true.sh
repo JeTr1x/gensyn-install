@@ -209,8 +209,6 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
             sleep 5  # Wait for 5 seconds before checking again
         done
         echo "Found userData.json. Proceeding..."
-        cp "$ROOT"/modal-login/temp-data/userData.json "$ROOT"/userData.json
-        cp "$ROOT"/modal-login/temp-data/userApiKey.json "$ROOT"/userApiKey.json
     fi
 
 
@@ -230,6 +228,10 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         fi
     done
 fi
+
+
+cp "$ROOT"/modal-login/temp-data/userData.json "$ROOT"/userData.json
+cp "$ROOT"/modal-login/temp-data/userApiKey.json "$ROOT"/userApiKey.json
 
 echo_green ">> Getting requirements..."
 pip install --upgrade pip
