@@ -17,7 +17,10 @@ rm -rf /root/rl-swarm
 echo "Клонирование репы gensyn rl-swarm и подготовка venv"
 cd && \
 git clone https://github.com/gensyn-ai/rl-swarm && \
-cd rl-swarm && git checkout v0.5.8 && python3 -m venv .venv
+cd rl-swarm && git checkout v0.5.8 && python3 -m venv .venv && \
+pip install --force-reinstall transformers==4.51.3 trl==0.19.1
+
+
 
 # Скачивание кастомного скрипта на запуск ноды
 echo " Скачивание кастомного скрипта на запуск ноды"
