@@ -18,7 +18,7 @@ echo "Клонирование репы gensyn rl-swarm и подготовка 
 cd && \
 git clone https://github.com/gensyn-ai/rl-swarm && \
 cd rl-swarm && git checkout v0.5.8 && python3 -m venv .venv && \
-pip install --force-reinstall transformers==4.51.3 trl==0.19.1
+source /root/rl-swarm/.venv/bin/activate && pip install --force-reinstall transformers==4.51.3 trl==0.19.1
 
 
 
