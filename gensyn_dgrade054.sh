@@ -22,6 +22,7 @@ cp /root/rl-swarm/userData.json /root/rlsv8_bak/userData.json && \
 rm -rf rl-swarm && \
 git clone https://github.com/gensyn-ai/rl-swarm && \
 cd rl-swarm && git checkout v0.5.4 && python3 -m venv .venv && \
+source /root/rl-swarm/.venv/bin/activate && pip install --force-reinstall transformers==4.51.3 trl==0.19.1
 cp /root/rlsv8_bak/swarm.pem /root/rl-swarm/swarm.pem && \
 cp /root/rlsv8_bak/userApiKey.json /root/rl-swarm/userApiKey.json && \
 cp /root/rlsv8_bak/userData.json /root/rl-swarm/userData.json
