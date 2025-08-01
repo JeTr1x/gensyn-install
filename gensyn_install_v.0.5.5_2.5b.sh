@@ -23,7 +23,7 @@ source /root/rl-swarm/.venv/bin/activate && pip install --force-reinstall transf
 # Скачивание кастомного скрипта на запуск ноды
 echo " Скачивание кастомного скрипта на запуск ноды"
 curl -o /root/rl-swarm/run_rl_swarm_true.sh https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/run_rl_swarm_true.sh
-sed -i s'|MODEL_NAME=""|MODEL_NAME="Gensyn/Qwen2.5-0.5B-Instruct"|'
+sed -i s'|MODEL_NAME=""|MODEL_NAME="Gensyn/Qwen2.5-0.5B-Instruct"|' /root/rl-swarm/run_rl_swarm_true.sh
 
 # НЕАКУТАЛЬНО
 # Скачивание кастомного конфига для ноды
