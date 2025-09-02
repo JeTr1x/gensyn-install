@@ -4,9 +4,11 @@
 # Переменная для конфига прим. bash gensyn_reinstall.sh 2
 #CONFIG_NUM=$1
 
-# Подготовка сервера / SKIP
-# echo "Подготовка сервера"
-# bash <(wget -qO- https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/prep.sh)
+
+if [ ! -f /etc/systemd/system/rl-swarm.service ]; then
+  echo "Подготовка сервера"
+  bash <(wget -qO- https://raw.githubusercontent.com/JeTr1x/gensyn-install/refs/heads/main/prep.sh)
+fi
 
 
 # Остановка сервиса; удаление файлов
